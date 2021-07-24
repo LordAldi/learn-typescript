@@ -1,0 +1,18 @@
+{
+  "name": "todoit-ts",
+  "version": "1.0.0",
+  "description": "- Add a new todo item\r - List existing todo items\r - Filter the list of existing todo items\r - Remove a single todo item\r - Remove all todo items",
+  "main": "index.js",
+  "scripts": {
+    "tsc": "tsc",
+    "watch": "tsc --watch",
+    "serve": "browser-sync start --server --watch"
+  },
+  "author": "LordAldi <aldianugra09@gmail.com>",
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {
+    "browser-sync": "^2.27.4",
+    "typescript": "^4.3.5"
+  }
+}
