@@ -16,7 +16,9 @@ export class PopulationServiceImpl implements PopulationService {
   private readonly countriesApiBaseUrl: string;
 
   constructor(baseUrl: string) {
-    if (baseUrl || baseUrl.trim().length === 0) {
+    console.log(baseUrl);
+
+    if (!baseUrl || baseUrl.trim().length === 0) {
       throw new Error("The base URL must be provided!");
     } else if (
       !baseUrl.toLowerCase().startsWith("https://") &&

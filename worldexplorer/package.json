@@ -19,7 +19,8 @@
   "license": "MIT",
   "dependencies": {
     "@types/chart.js": "^2.9.34",
-    "chart.js": "^3.5.0",
-    "io-ts": "1.4.2"
+    "chart.js": "2.7.3",
+    "io-ts": "1.4.2",
+    "services": "0.0.3"
   }
 }

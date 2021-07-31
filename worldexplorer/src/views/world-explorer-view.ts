@@ -1,7 +1,8 @@
-import { Country, DataPoint } from "../domain";
+import { Country } from "../domain";
 import { WorldExplorerView } from "./world-explorer-view.intf";
 import { ChartDetails } from "./chart-details.intf";
-var Chart = require("chart.js");
+import Chart = require("chart.js");
+
 export class WorldExplorerHTMLView implements WorldExplorerView {
   private readonly _countrySelect: HTMLSelectElement;
   private readonly _indicatorSelect: HTMLSelectElement;
