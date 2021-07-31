@@ -2,11 +2,14 @@ import { PopulationService } from "./population-service.intf";
 import { Country, DataPoint } from "../domain";
 import {
   WorldBankApiV2,
+  WorldBankApiV2Indicators,
   worldBankApiV2CountryInformationValidator,
   WorldBankApiV2CountryResponse,
   worldBankApiV2CountryResponseValidator,
   WorldBankApiV2Formats,
   WorldBankApiV2Params,
+  worldBankApiV2IndicatorResponseValidator,
+  WorldBankApiV2IndicatorResponse,
 } from "./world-bank-api";
 import { ThrowReporter } from "io-ts/lib/ThrowReporter";
 
@@ -123,11 +126,47 @@ export class PopulationServiceImpl implements PopulationService {
       country.latitude
     );
   }
-  getTotalPopulation(
+  getBaseIndicatorApiUrlFor(
+    indicator: WorldBankApiV2Indicators,
+    country?: Country
+  ) {
+    let countryCode = "all";
+    if (country) {
+      countryCode = country.id;
+    }
+    return `${this.countriesApiBaseUrl}/${countryCode}/${WorldBankApiV2.INDICATORS_API_PREFIX}/${indicator}`;
+  }
+  async getTotalPopulation(
     country: Country,
     dateRange: string
   ): Promise<DataPoint[]> {
-    throw new Error("Method not implemented.");
+    const response: Response = await fetch(
+      `${this.getBaseIndicatorApiUrlFor(
+        WorldBankApiV2Indicators.TOTAL_POPULATION,
+        country
+      )}?${WorldBankApiV2Params.FORMAT}=${WorldBankApiV2Formats.JSON}&${
+        WorldBankApiV2Params.PER_PAGE
+      }=1000&${WorldBankApiV2Params.DATE}=${dateRange}`
+    );
+    const checkedResponse: Response = await this.checkResponseStatus(response);
+    let jsonContent: unknown = await this.getJsonContent(checkedResponse);
+    const validationResult =
+      worldBankApiV2IndicatorResponseValidator.decode(jsonContent);
+    ThrowReporter.report(validationResult);
+
+    const dataPoints = (
+      validationResult.value as WorldBankApiV2IndicatorResponse
+    )[1];
+    let retVal: DataPoint[] = [];
+    if (dataPoints) {
+      retVal = dataPoints
+        .filter((dataPoint) => dataPoint.value !== null)
+        .map(
+          (dataPoint) =>
+            new DataPoint(dataPoint.date, dataPoint.value as number)
+        );
+    }
+    return retVal;
   }
   getMalePopulation(country: Country, dateRange: string): Promise<DataPoint[]> {
     throw new Error("Method not implemented.");
